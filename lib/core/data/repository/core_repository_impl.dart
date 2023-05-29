@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:tasky/core/data/data_source/mutations.dart';
 import 'package:tasky/core/data/data_source/queries.dart';
 import 'package:tasky/core/domain/model/todo.dart';
 import 'package:tasky/dependency_injection/locator.dart';
@@ -11,7 +12,7 @@ class CoreRepositoryImpl implements CoreRepository {
 
   @override
   Future<List<Todo>> getTodos(
-      {bool completed = false, String search = ''}) async {
+      {required bool completed, required String search}) async {
     try {
       QueryResult result = await client.query(QueryOptions(
           document: gql(Queries.getTodos),
@@ -32,6 +33,24 @@ class CoreRepositoryImpl implements CoreRepository {
           res.map((todo) => Todo.convertFromMap(map: todo)).toList();
 
       return todos;
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  @override
+  Future<bool> createTodo(
+      {required bool completed, required String title}) async {
+    try {
+      QueryResult result = await client.mutate(MutationOptions(
+          document: gql(Mutations.createTodo),
+          variables: {'completed': completed, 'title': title}));
+
+      if (result.hasException) {
+        throw Exception(result.exception);
+      } else {
+        return true;
+      }
     } catch (error) {
       throw Exception(error);
     }
