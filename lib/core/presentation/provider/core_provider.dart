@@ -31,4 +31,34 @@ class CoreProvider extends ChangeNotifier {
         .call(completed: completed, title: title);
     return res;
   }
+
+  Future<bool> updateTodo({required bool completed, required String id, required String title}) async {
+    return await useCases.updateTodoUseCase.call(completed: completed, id: id, title: title);
+  }
+
+  Future<bool> deleteTodo({required String id}) async {
+    return await useCases.deleteTodoUseCase.call(id: id);
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -58,4 +58,40 @@ class CoreRepositoryImpl implements CoreRepository {
       throw Exception(error);
     }
   }
+
+  @override
+  Future<bool> deleteTodo({required String id}) async {
+    try {
+      QueryResult result = await client.mutate(MutationOptions(
+          document: gql(Mutations.deleteTodo), variables: {'id': id}));
+
+      if (result.hasException) {
+        throw Exception(result.exception);
+      } else {
+        return true;
+      }
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
+  @override
+  Future<bool> updateTodo(
+      {required bool completed,
+      required String id,
+      required String title}) async {
+    try {
+      QueryResult result = await client.mutate(MutationOptions(
+          document: gql(Mutations.updateTodo),
+          variables: {'completed': completed, 'id': id, 'title': title}));
+
+      if (result.hasException) {
+        throw Exception(result.exception);
+      } else {
+        return true;
+      }
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
 }

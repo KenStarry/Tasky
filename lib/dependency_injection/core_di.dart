@@ -3,7 +3,9 @@ import 'package:tasky/core/data/repository/core_repository_impl.dart';
 import 'package:tasky/core/domain/repository/core_repository.dart';
 import 'package:tasky/core/domain/use_cases/core_use_cases.dart';
 import 'package:tasky/core/domain/use_cases/createTodoUseCase.dart';
+import 'package:tasky/core/domain/use_cases/delete_todo_use_case.dart';
 import 'package:tasky/core/domain/use_cases/getTodosUseCase.dart';
+import 'package:tasky/core/domain/use_cases/update_todo_use_case.dart';
 
 void coreDI({required GetIt locator}) {
   //  provide our repository implementation
@@ -12,5 +14,7 @@ void coreDI({required GetIt locator}) {
   //  providing our core use cases
   locator.registerLazySingleton<CoreUseCases>(() => CoreUseCases(
       getTodosUseCase: GetTodosUseCase(),
-      createTodoUseCase: CreateTodoUseCase()));
+      createTodoUseCase: CreateTodoUseCase(),
+      updateTodoUseCase: UpdateTodoUseCase(),
+      deleteTodoUseCase: DeleteTodoUseCase()));
 }
