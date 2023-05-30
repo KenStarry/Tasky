@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -7,8 +9,30 @@ import 'package:tasky/core/presentation/provider/core_provider.dart';
 import 'package:tasky/features/feature_home/presentation/components/bottom_sheet_content.dart';
 import 'package:tasky/features/feature_home/presentation/components/todo_card.dart';
 
-class HomeScreenContent extends StatelessWidget {
+class HomeScreenContent extends StatefulWidget {
   const HomeScreenContent({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreenContent> createState() => _HomeScreenContentState();
+}
+
+class _HomeScreenContentState extends State<HomeScreenContent> {
+
+  void showMyBottomSheet({required BuildContext context, Todo? todo}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return BottomSheetContent(
+          todo: todo,
+        );
+      },
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16))),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +68,7 @@ class HomeScreenContent extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               //  show bottom sheet for creating a task
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (context) {
-                  return const BottomSheetContent();
-                },
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16))),
-              );
+              showMyBottomSheet(context: context, todo: null);
             },
             backgroundColor: Colors.lightBlueAccent,
             child: const Icon(
@@ -72,7 +86,7 @@ class HomeScreenContent extends StatelessWidget {
                     Expanded(
                       child: Text.rich(TextSpan(children: [
                         TextSpan(
-                            text: "${todos.length} ",
+                            text: "${todos.length - completedTodos.length} ",
                             style: const TextStyle(
                                 fontSize: 32,
                                 color: Colors.black,
@@ -112,7 +126,7 @@ class HomeScreenContent extends StatelessWidget {
                             ])),
                             LinearPercentIndicator(
                               animation: true,
-                              animateFromLastPercent: false,
+                              animateFromLastPercent: true,
                               percent: (completedTodos.length / todos.length),
                               lineHeight: 16,
                               barRadius: const Radius.circular(32),
@@ -139,7 +153,31 @@ class HomeScreenContent extends StatelessWidget {
                     physics: const BouncingScrollPhysics(),
                     itemCount: todos.length,
                     itemBuilder: (context, index) {
-                      return TodoCard(todo: todos[index]);
+                      return TodoCard(
+                        todo: todos[index],
+                        onChecked: (isChecked) async {
+                          //  update the _todo's status
+                          await Provider.of<CoreProvider>(
+                                  context,
+                                  listen: false)
+                              .updateTodo(
+                                  completed: todos[index].completed != null &&
+                                          todos[index].completed == false
+                                      ? true
+                                      : false,
+                                  id: todos[index].id ?? "",
+                                  title: todos[index].title ?? "");
+
+                          if (mounted) {
+                            Provider.of<CoreProvider>(context, listen: false)
+                                .getTodos(completed: null, search: '');
+                          }
+                        },
+                        onTodoClicked: () {
+                          //  open bottomsheet with the _todo item
+                          showMyBottomSheet(context: context, todo: todos[index]);
+                        },
+                      );
                     },
                     separatorBuilder: (context, index) => const SizedBox(
                           height: 24,

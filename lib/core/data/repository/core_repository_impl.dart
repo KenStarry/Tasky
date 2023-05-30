@@ -12,7 +12,7 @@ class CoreRepositoryImpl implements CoreRepository {
 
   @override
   Future<List<Todo>> getTodos(
-      {required bool completed, required String search}) async {
+      {required bool? completed, required String search}) async {
     try {
       QueryResult result = await client.query(QueryOptions(
           document: gql(Queries.getTodos),

@@ -12,17 +12,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future getTodosFuture;
-  // late Future createTodoFuture;
 
   @override
   void initState() {
     super.initState();
 
     getTodosFuture = Provider.of<CoreProvider>(context, listen: false)
-        .getTodos(completed: false, search: '');
-
-    // createTodoFuture = Provider.of<CoreProvider>(context, listen: false)
-    //     .createTodo(completed: false, title: 'I\'m stuck so bad');
+        .getTodos(completed: null, search: '');
   }
 
   @override

@@ -6,6 +6,6 @@ class GetTodosUseCase {
   CoreRepository repository = locator.get<CoreRepository>();
 
   Future<List<Todo>> call(
-          {required bool completed, required String search}) async =>
+          {required bool? completed, required String search}) async =>
       await repository.getTodos(completed: completed, search: search);
 }

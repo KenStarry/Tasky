@@ -41,6 +41,8 @@ dependencies:
   provider: ^6.0.5
   # shows percentage
   percent_indicator: ^4.2.3
+  # creating a slidable
+  flutter_slidable: ^3.0.0
 
 dev_dependencies:
   flutter_test:

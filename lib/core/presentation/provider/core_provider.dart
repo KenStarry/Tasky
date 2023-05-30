@@ -16,9 +16,11 @@ class CoreProvider extends ChangeNotifier {
   }
 
   Future<List<Todo>> getTodos(
-      {required bool completed, required String search}) async {
+      {required bool? completed, required String search}) async {
     var todos = await useCases.getTodosUseCase
         .call(completed: completed, search: search);
+
+    todos.sort((todo1, todo2) => todo1.completed.toString().compareTo(todo2.completed.toString()));
 
     this.todos = todos;
     notifyListeners();
