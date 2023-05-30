@@ -40,9 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
             //  display the todos
             return const HomeScreenContent();
           } else {
-            return const SizedBox(width: double.infinity,
+            return Container(width: double.infinity,
               height: double.infinity,
-              child: Center(child: CircularProgressIndicator(),),);
+              color: Colors.white,
+              child: const Center(child: CircularProgressIndicator(),),);
           }
         });
   }
