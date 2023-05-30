@@ -20,6 +20,7 @@ class CoreProvider extends ChangeNotifier {
     var todos = await useCases.getTodosUseCase
         .call(completed: completed, search: search);
 
+    todos.sort((todo1, todo2) => todo1.title!.compareTo(todo2.title!));
     todos.sort((todo1, todo2) => todo1.completed.toString().compareTo(todo2.completed.toString()));
 
     this.todos = todos;

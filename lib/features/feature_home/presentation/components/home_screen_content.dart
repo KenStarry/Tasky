@@ -54,12 +54,38 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               statusBarColor: Colors.white,
               statusBarIconBrightness: Brightness.dark,
             ),
-            title: Text(
-              "Tasks",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                  color: Colors.black.withOpacity(0.7)),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Tasks",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Colors.black.withOpacity(0.7)),
+                ),
+
+                //  completed button
+                GestureDetector(
+                  onTap: (){
+                    //  open completed screen
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.lightBlueAccent.withOpacity(0.1),
+                    ),
+                    child: const Row(
+                      children: [
+                        Text("Completed", style: TextStyle(fontSize: 16, color: Colors.black87),),
+                        SizedBox(width: 8,),
+                        Icon(Icons.open_in_new, color: Colors.black87, size: 16,)
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
             elevation: 0,
             toolbarHeight: 100,
