@@ -6,9 +6,12 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:tasky/core/domain/model/todo.dart';
 import 'package:tasky/core/presentation/provider/core_provider.dart';
+import 'package:tasky/features/feature_completed/presentation/completed.dart';
 import 'package:tasky/features/feature_home/presentation/components/bottom_sheet_content.dart';
 import 'package:tasky/features/feature_home/presentation/components/empty_lottie.dart';
 import 'package:tasky/features/feature_home/presentation/components/todo_card.dart';
+
+import '../utils/show_bottom_sheet.dart';
 
 class HomeScreenContent extends StatefulWidget {
   const HomeScreenContent({Key? key}) : super(key: key);
@@ -18,21 +21,6 @@ class HomeScreenContent extends StatefulWidget {
 }
 
 class _HomeScreenContentState extends State<HomeScreenContent> {
-  void showMyBottomSheet({required BuildContext context, Todo? todo}) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return BottomSheetContent(
-          todo: todo,
-        );
-      },
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16), topRight: Radius.circular(16))),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     //  all todos
@@ -58,7 +46,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Tasks",
+                  "Tasky",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24,
@@ -69,6 +57,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                 GestureDetector(
                   onTap: () {
                     //  open completed screen
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Completed()));
                   },
                   child: Container(
                     padding:
@@ -113,7 +103,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             ),
           ),
           body: allTodos.length - completedTodos.length == 0
-              ? const EmptyLottie()
+              ? const EmptyLottie(
+                  title: "No Tasks, You are clear for the day...",
+                  lottie: "assets/lottie/empty_box_shake.json")
               : Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -130,7 +122,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                   child: Text.rich(TextSpan(children: [
                                     TextSpan(
                                         text:
-                                        "${allTodos.length - completedTodos.length} ",
+                                            "${allTodos.length - completedTodos.length} ",
                                         style: const TextStyle(
                                             fontSize: 32,
                                             color: Colors.black,
@@ -187,10 +179,11 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                 ),
                               )
                             ],
-                          )
-                      ),
+                          )),
 
-                      const SizedBox(height: 24,),
+                      const SizedBox(
+                        height: 24,
+                      ),
 
                       Expanded(
                         flex: 10,
