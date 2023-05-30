@@ -58,23 +58,22 @@ class BottomSheetAddTask extends StatelessWidget {
 
                 //  submit button
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     if (controller.text.isNotEmpty) {
                       //  create the todo_in graphql
-                      Provider.of<CoreProvider>(context, listen: false)
+                      await Provider.of<CoreProvider>(context, listen: false)
                           .createTodo(completed: false, title: controller.text);
                     }
 
                     //  check if context is mounted
                     if (context.mounted) {
-                      //  refresh the data
-                      Provider.of<CoreProvider>(context, listen: false)
-                          .getTodos(completed: null, search: '');
-
                       //  clear controller
                       controller.clear();
                       //  hide bottom sheet
                       Navigator.pop(context);
+                      //  refresh the data
+                      Provider.of<CoreProvider>(context, listen: false)
+                          .getTodos(completed: null, search: '');
                     }
                   },
                   child: Container(

@@ -11,7 +11,8 @@ class CoreProvider extends ChangeNotifier {
   List<Todo> get getAllTodos => todos;
 
   List<Todo> getCompletedTodos() {
-    List<Todo> completed = todos.where((todo) => todo.completed == true).toList();
+    List<Todo> completed =
+        todos.where((todo) => todo.completed == true).toList();
     return completed;
   }
 
@@ -21,7 +22,8 @@ class CoreProvider extends ChangeNotifier {
         .call(completed: completed, search: search);
 
     todos.sort((todo1, todo2) => todo1.title!.compareTo(todo2.title!));
-    todos.sort((todo1, todo2) => todo1.completed.toString().compareTo(todo2.completed.toString()));
+    todos.sort((todo1, todo2) =>
+        todo1.completed.toString().compareTo(todo2.completed.toString()));
 
     this.todos = todos;
     notifyListeners();
@@ -29,39 +31,14 @@ class CoreProvider extends ChangeNotifier {
   }
 
   Future<bool> createTodo(
-      {required bool completed, required String title}) async {
-    var res = await useCases.createTodoUseCase
-        .call(completed: completed, title: title);
-    return res;
-  }
+          {required bool completed, required String title}) async =>
+      await useCases.createTodoUseCase.call(completed: completed, title: title);
 
-  Future<bool> updateTodo({required bool completed, required String id, required String title}) async {
-    return await useCases.updateTodoUseCase.call(completed: completed, id: id, title: title);
-  }
+  Future<bool> updateTodo(
+      {required bool completed,
+      required String id,
+      required String title}) async => await useCases.updateTodoUseCase
+      .call(completed: completed, id: id, title: title);
 
-  Future<bool> deleteTodo({required String id}) async {
-    return await useCases.deleteTodoUseCase.call(id: id);
-  }
+  Future<bool> deleteTodo({required String id}) async => await useCases.deleteTodoUseCase.call(id: id);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
