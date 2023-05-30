@@ -33,7 +33,7 @@ class CoreRepositoryImpl implements CoreRepository {
       List<Todo> todos =
           res.map((todo) => Todo.convertFromMap(map: todo)).toList();
 
-      print(todos);
+      print("All todos : ${res}");
 
       return todos;
     } catch (error) {

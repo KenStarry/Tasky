@@ -39,6 +39,8 @@ dependencies:
   graphql_flutter: ^5.1.2
   # provider state management
   provider: ^6.0.5
+  # shows percentage
+  percent_indicator: ^4.2.3
 
 dev_dependencies:
   flutter_test:

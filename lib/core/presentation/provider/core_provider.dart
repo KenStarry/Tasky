@@ -10,6 +10,11 @@ class CoreProvider extends ChangeNotifier {
 
   List<Todo> get getAllTodos => todos;
 
+  List<Todo> getCompletedTodos() {
+    List<Todo> completed = todos.where((todo) => todo.completed == true).toList();
+    return completed;
+  }
+
   Future<List<Todo>> getTodos(
       {required bool completed, required String search}) async {
     var todos = await useCases.getTodosUseCase
