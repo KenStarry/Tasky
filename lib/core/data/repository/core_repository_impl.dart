@@ -19,6 +19,7 @@ class CoreRepositoryImpl implements CoreRepository {
           variables: {'completed': completed, 'search': search}));
 
       if (result.hasException) {
+        print("Result -> ${result.data}");
         throw Exception(result.exception);
       }
 
@@ -31,6 +32,8 @@ class CoreRepositoryImpl implements CoreRepository {
 
       List<Todo> todos =
           res.map((todo) => Todo.convertFromMap(map: todo)).toList();
+
+      print(todos);
 
       return todos;
     } catch (error) {

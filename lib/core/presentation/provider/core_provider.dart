@@ -1,0 +1,29 @@
+import 'package:flutter/widgets.dart';
+import 'package:tasky/core/domain/model/todo.dart';
+import 'package:tasky/core/domain/use_cases/core_use_cases.dart';
+import 'package:tasky/dependency_injection/locator.dart';
+
+class CoreProvider extends ChangeNotifier {
+  var useCases = locator.get<CoreUseCases>();
+
+  List<Todo> todos = [];
+
+  List<Todo> get getAllTodos => todos;
+
+  Future<List<Todo>> getTodos(
+      {required bool completed, required String search}) async {
+    var todos = await useCases.getTodosUseCase
+        .call(completed: completed, search: search);
+
+    this.todos = todos;
+    notifyListeners();
+    return todos;
+  }
+
+  Future<bool> createTodo(
+      {required bool completed, required String title}) async {
+    var res = await useCases.createTodoUseCase
+        .call(completed: completed, title: title);
+    return res;
+  }
+}
