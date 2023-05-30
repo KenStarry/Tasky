@@ -6,13 +6,32 @@ import 'package:tasky/dependency_injection/locator.dart';
 class CoreProvider extends ChangeNotifier {
   var useCases = locator.get<CoreUseCases>();
 
-  List<Todo> todos = [];
+  List<Todo> incompleteTodos = [];
+  List<Todo> allTodos = [];
 
-  List<Todo> get getAllTodos => todos;
+  List<Todo> get getIncompleteTodos {
+
+    incompleteTodos.sort((todo1, todo2) => todo1.title!.compareTo(todo2.title!));
+    incompleteTodos.sort((todo1, todo2) =>
+        todo1.completed.toString().compareTo(todo2.completed.toString()));
+
+    return incompleteTodos;
+  }
+
+  List<Todo> get getAllTodos {
+
+    allTodos.sort((todo1, todo2) => todo1.title!.compareTo(todo2.title!));
+    allTodos.sort((todo1, todo2) =>
+        todo1.completed.toString().compareTo(todo2.completed.toString()));
+
+    return allTodos;
+  }
 
   List<Todo> getCompletedTodos() {
     List<Todo> completed =
-        todos.where((todo) => todo.completed == true).toList();
+        allTodos.where((todo) {
+          return todo.completed == true;
+        }).toList();
     return completed;
   }
 
@@ -25,20 +44,41 @@ class CoreProvider extends ChangeNotifier {
     todos.sort((todo1, todo2) =>
         todo1.completed.toString().compareTo(todo2.completed.toString()));
 
-    this.todos = todos;
+    completed == null ? allTodos = todos : incompleteTodos = todos;
     notifyListeners();
     return todos;
   }
 
-  Future<bool> createTodo(
-          {required bool completed, required String title}) async =>
-      await useCases.createTodoUseCase.call(completed: completed, title: title);
+  Future<Todo> createTodo(
+          {required bool completed, required String title}) async {
+    var createdTodo = await useCases.createTodoUseCase.call(completed: completed, title: title);
+    incompleteTodos.add(createdTodo);
+    allTodos.add(createdTodo);
+    notifyListeners();
+    return createdTodo;
+  }
 
   Future<bool> updateTodo(
-      {required bool completed,
-      required String id,
-      required String title}) async => await useCases.updateTodoUseCase
-      .call(completed: completed, id: id, title: title);
+          {required bool completed,
+          required String id,
+          required String title}) async {
 
-  Future<bool> deleteTodo({required String id}) async => await useCases.deleteTodoUseCase.call(id: id);
+    incompleteTodos[incompleteTodos.indexWhere((element) => element.id == id)] = Todo(
+      id: id, title: title, completed: completed
+    );
+    allTodos[allTodos.indexWhere((element) => element.id == id)] = Todo(
+        id: id, title: title, completed: completed
+    );
+    notifyListeners();
+
+    return await useCases.updateTodoUseCase
+          .call(completed: completed, id: id, title: title);
+  }
+
+  Future<bool> deleteTodo({required Todo todo}) async {
+    incompleteTodos.remove(todo);
+    allTodos.remove(todo);
+    notifyListeners();
+    return await useCases.deleteTodoUseCase.call(id: todo.id!);
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/domain/model/todo.dart';
 import '../../../../core/presentation/provider/core_provider.dart';
 
 class BottomSheetAddTask extends StatelessWidget {
@@ -58,23 +59,16 @@ class BottomSheetAddTask extends StatelessWidget {
 
                 //  submit button
                 GestureDetector(
-                  onTap: () async {
+                  onTap: () {
                     if (controller.text.isNotEmpty) {
                       //  create the todo_in graphql
-                      await Provider.of<CoreProvider>(context, listen: false)
+                      Provider.of<CoreProvider>(context, listen: false)
                           .createTodo(completed: false, title: controller.text);
                     }
-
-                    //  check if context is mounted
-                    if (context.mounted) {
-                      //  clear controller
-                      controller.clear();
-                      //  hide bottom sheet
-                      Navigator.pop(context);
-                      //  refresh the data
-                      Provider.of<CoreProvider>(context, listen: false)
-                          .getTodos(completed: null, search: '');
-                    }
+                    //  clear controller
+                    controller.clear();
+                    //  hide bottom sheet
+                    Navigator.pop(context);
                   },
                   child: Container(
                     width: 50,

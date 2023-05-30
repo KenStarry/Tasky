@@ -33,8 +33,6 @@ class CoreRepositoryImpl implements CoreRepository {
       List<Todo> todos =
           res.map((todo) => Todo.convertFromMap(map: todo)).toList();
 
-      print("All todos : ${res}");
-
       return todos;
     } catch (error) {
       throw Exception(error);
@@ -42,7 +40,7 @@ class CoreRepositoryImpl implements CoreRepository {
   }
 
   @override
-  Future<bool> createTodo(
+  Future<Todo> createTodo(
       {required bool completed, required String title}) async {
     try {
       QueryResult result = await client.mutate(MutationOptions(
@@ -52,7 +50,8 @@ class CoreRepositoryImpl implements CoreRepository {
       if (result.hasException) {
         throw Exception(result.exception);
       } else {
-        return true;
+        var res = result.data?['createTodo']['todo'];
+        return Todo.convertFromMap(map: res);
       }
     } catch (error) {
       throw Exception(error);

@@ -36,7 +36,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
   @override
   Widget build(BuildContext context) {
     //  all todos
-    List<Todo> todos = Provider.of<CoreProvider>(context).getAllTodos;
+    List<Todo> todos = Provider.of<CoreProvider>(context).getIncompleteTodos;
+    List<Todo> allTodos = Provider.of<CoreProvider>(context).getAllTodos;
 
     //  completed todos
     List<Todo> completedTodos =
@@ -111,7 +112,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               color: Colors.white,
             ),
           ),
-          body: todos.length - completedTodos.length == 0
+          body: allTodos.length - completedTodos.length == 0
               ? const EmptyLottie()
               : Container(
                   width: double.infinity,
@@ -119,9 +120,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   child: Column(
                     children: [
                       //  tasks count
-                      Expanded(
-                        flex: 1,
-                        child: Padding(
+                      Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Row(
                             children: [
@@ -131,7 +130,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                   child: Text.rich(TextSpan(children: [
                                     TextSpan(
                                         text:
-                                            "${todos.length - completedTodos.length} ",
+                                        "${allTodos.length - completedTodos.length} ",
                                         style: const TextStyle(
                                             fontSize: 32,
                                             color: Colors.black,
@@ -150,7 +149,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                   alignment: AlignmentDirectional.center,
                                   child: Column(
                                     children: [
-                                      const SizedBox(height: 8,),
+                                      const SizedBox(
+                                        height: 8,
+                                      ),
                                       Text.rich(TextSpan(children: [
                                         TextSpan(
                                             text: "${completedTodos.length}",
@@ -165,7 +166,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                                 color: Colors.black87,
                                                 fontWeight: FontWeight.w700)),
                                         TextSpan(
-                                            text: "${todos.length}",
+                                            text: "${allTodos.length}",
                                             style: const TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.black87,
@@ -175,7 +176,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                         animation: true,
                                         animateFromLastPercent: true,
                                         percent: (completedTodos.length /
-                                            todos.length),
+                                            allTodos.length),
                                         lineHeight: 16,
                                         barRadius: const Radius.circular(32),
                                         backgroundColor: Colors.grey.shade300,
@@ -186,9 +187,10 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                 ),
                               )
                             ],
-                          ),
-                        ),
+                          )
                       ),
+
+                      const SizedBox(height: 24,),
 
                       Expanded(
                         flex: 10,
@@ -202,9 +204,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                               itemBuilder: (context, index) {
                                 return TodoCard(
                                   todo: todos[index],
-                                  onChecked: (isChecked) async {
+                                  onChecked: (isChecked) {
                                     //  update the _todo's status
-                                    await Provider.of<CoreProvider>(context,
+                                    Provider.of<CoreProvider>(context,
                                             listen: false)
                                         .updateTodo(
                                             completed: todos[index].completed !=
@@ -215,34 +217,17 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                                                 : false,
                                             id: todos[index].id ?? "",
                                             title: todos[index].title ?? "");
-
-                                    if (mounted) {
-                                      Provider.of<CoreProvider>(context,
-                                              listen: false)
-                                          .getTodos(
-                                              completed: null, search: '');
-                                    }
                                   },
                                   onTodoClicked: () {
                                     //  open bottomsheet with the _todo item
                                     showMyBottomSheet(
                                         context: context, todo: todos[index]);
                                   },
-                                  onDelete: (context) async {
+                                  onDelete: (context) {
                                     //  delete from database
-                                    await Provider.of<CoreProvider>(context,
+                                    Provider.of<CoreProvider>(context,
                                             listen: false)
-                                        .deleteTodo(id: todos[index].id!);
-
-                                    //  refresh data
-                                    if (mounted) {
-                                      Provider.of<CoreProvider>(context,
-                                              listen: false)
-                                          .getTodos(
-                                              completed: null, search: '');
-
-                                      setState(() {});
-                                    }
+                                        .deleteTodo(todo: todos[index]);
                                   },
                                   onArchive: (context) {},
                                 );

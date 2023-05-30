@@ -12,19 +12,22 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future getTodosFuture;
+  late Future getAllTodosFuture;
 
   @override
   void initState() {
     super.initState();
 
     getTodosFuture = Provider.of<CoreProvider>(context, listen: false)
+        .getTodos(completed: false, search: '');
+    getAllTodosFuture = Provider.of<CoreProvider>(context, listen: false)
         .getTodos(completed: null, search: '');
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.wait([getTodosFuture]),
+        future: Future.wait([getTodosFuture, getAllTodosFuture]),
         initialData: null,
         builder: (context, asyncSnapshot) {
           //
